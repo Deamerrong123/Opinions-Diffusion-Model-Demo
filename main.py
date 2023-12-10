@@ -29,7 +29,9 @@ start a simple demo, with customized number of nodes and specified a "RMM" updat
 VERSION = f"{sys.argv[0]} version 1.0.0"
 
 def _vaildModel(s: str)->bool:
-    return s in ['MM','RMM']
+    if s not in ["MM","RMM"]:
+        raise ValueError
+    return s
 
 def _vaildPath(fileName: str)->bool:
     pass
@@ -49,11 +51,13 @@ def parse(args: List[str]) -> Tuple[int, int, int, str,str]:
     random_seed = 0
     model = "MM"
     input_file = None
+    output_file = None
     options, arguments = getopt.getopt(
         args,                              # Arguments
-        "hi:",
+        "hio:",
         # 'vhs:',                            # Short option definitions
         ["help","steps=", "nodes=", "seed=","model=",'input_file=']) # Long option definitions
+
     for o, a in options:
         if o in ("-h", "--help"):
             print(USAGE)
@@ -74,11 +78,16 @@ def parse(args: List[str]) -> Tuple[int, int, int, str,str]:
             except ValueError:
                 raise SystemExit(USAGE)
         elif o in ("--model"):
-            model = a
+            try:
+                model = _vaildModel(a)
+            except ValueError:
+                sys.exit(USAGE)
         elif o in ("-i","--input_file"):
             input_file = a
+        elif o in ("-o","--output_file"):
+            output_file = a
 
-    if len(arguments) > 6:
+    if len(arguments) > 5:
         raise SystemExit(USAGE)
 
     return num_steps, num_nodes , random_seed , model, input_file
@@ -102,15 +111,3 @@ if __name__ == "__main__":
     main()
 
 
-
-# if __name__ == "__main__":
-#     args = sys.argv[1:] # obtains arguments from CML
-#
-#     if len(args) > 5:
-#         message = "Too much arguments.\n"
-#         message += "Usage: "
-#         sys.exit(message)
-#     
-#     demo(num_steps=5,num_nodes=20,rmm = True)
-#     # for i , arg in enumerate(args):
-#     #     pass
