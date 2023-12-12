@@ -84,9 +84,15 @@ def update_node_RMM(G,opinions):
 
  
 def read_opinions(fileName) -> List[int]:
-    if not os.path.isfile(fileName):
-        sys.exit(" File Does Not Exists ... ")
-    return True
+    try:
+        with open(fileName , 'r') as f:
+            for line in f:
+                line = line.strip()
+                result = [int(e) for e in line.split(',')]
+    except ValueError:
+        sys.exit("Input Error in input file...")
+        
+    return result
     
 def ini_opinions( num_nodes , fileName = None )->List[int]:
     if fileName == None:
@@ -94,9 +100,7 @@ def ini_opinions( num_nodes , fileName = None )->List[int]:
 
     return read_opinions(fileName)
 
-
-
-def demo(num_steps:int = 5 , num_nodes:int =  20, random_seed:int = 0, model:str = None , input_file:str = None ):
+def demo(num_steps:int = 5 , num_nodes:int =  20, random_seed:int = 0, model:str = None , input_file:str = None ,output_file = None):
     # Initialize opinions (e.g., +1 or -1) for each node
     # _opinions = [1,1,1,1,-1,-1,-1,1,1,-1,1,-1,1,-1,1,1,-1,-1,1,1
     # _opinions = [1,1,1,1,-1,-1,-1,1,1,-1,1,-1,1,-1,1,1,-1,-1]
@@ -144,4 +148,7 @@ def demo(num_steps:int = 5 , num_nodes:int =  20, random_seed:int = 0, model:str
 
     for ax in axs[num_steps+1:]:
       plt.delaxes(ax)
-    plt.show()
+    if output_file == None:
+        plt.show()
+    else: 
+        plt.savefig(output_file)

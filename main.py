@@ -28,13 +28,17 @@ start a simple demo, with customized number of nodes and specified a "RMM" updat
 # USAGE = f"Usage: python {sys.argv[0]} [--help] | [-s <sep>] [first [incr]] last"
 VERSION = f"{sys.argv[0]} version 1.0.0"
 
-def _vaildModel(s: str)->bool:
+def _vaildModel(s: str)->str:
     if s not in ["MM","RMM"]:
         raise ValueError
     return s
 
-def _vaildPath(fileName: str)->bool:
-    pass
+def _vaildPath(fileName: str)->str:
+    if not os.path.exists(fileName):
+        raise FileNotFoundError
+    return fileName
+
+    
 
 
 def parse(args: List[str]) -> Tuple[int, int, int, str,str]:
@@ -56,7 +60,7 @@ def parse(args: List[str]) -> Tuple[int, int, int, str,str]:
         args,                              # Arguments
         "hio:",
         # 'vhs:',                            # Short option definitions
-        ["help","steps=", "nodes=", "seed=","model=",'input_file=']) # Long option definitions
+        ["help","steps=", "nodes=", "seed=","model=",'input_file=','output_file=']) # Long option definitions
 
     for o, a in options:
         if o in ("-h", "--help"):
@@ -83,20 +87,23 @@ def parse(args: List[str]) -> Tuple[int, int, int, str,str]:
             except ValueError:
                 sys.exit(USAGE)
         elif o in ("-i","--input_file"):
-            input_file = a
+            try:
+                input_file = _vaildPath(a)
+            except FileNotFoundError:
+                sys.exit(USAGE)
         elif o in ("-o","--output_file"):
             output_file = a
 
     if len(arguments) > 5:
         raise SystemExit(USAGE)
 
-    return num_steps, num_nodes , random_seed , model, input_file
+    return num_steps, num_nodes , random_seed , model, input_file, output_file
 
 def main() -> None:
     args = sys.argv[1:]
     if not args:
         raise SystemExit(USAGE)
-    num_steps , num_nodes , random_seed , model , input_file = parse(args)
+    num_steps , num_nodes , random_seed , model , input_file ,output_file = parse(args)
     print(f"You inputs are following: num_steps {num_steps} , num_nodes {num_nodes}, random_seed {random_seed}, model {model},input_file {input_file}\n")
 
     if (num_nodes > 30):
@@ -105,7 +112,7 @@ def main() -> None:
     elif num_steps > 28:
         sys.exit("Maximum number of steps is 28! ")
 
-    demo( num_steps , num_nodes, random_seed , model , input_file )
+    demo( num_steps , num_nodes, random_seed , model , input_file , output_file)
 
 if __name__ == "__main__":
     main()
