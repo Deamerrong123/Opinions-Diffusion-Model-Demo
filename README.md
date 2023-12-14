@@ -1,7 +1,7 @@
 # Opinions-Diffusion-Model-Demo
 
 This is a deliverable github repo.
-The [https://colab.research.google.com/drive/1JqP6z63uPDY3lyhmwExrEwJuAlANcG8W?usp=sharing]{Google Colab}
+The [Google Colab](https://colab.research.google.com/drive/1JqP6z63uPDY3lyhmwExrEwJuAlANcG8W?usp=sharing) contains the simulation charts.
 
 ## Install
 I would suggest in using virtual environment so that allows you to mange separated packages installations for different projects.
